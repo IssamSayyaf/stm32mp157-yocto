@@ -1,0 +1,19 @@
+cmake_minimum_required(VERSION 3.5)
+project(ExampleLibrary)
+
+set(LIBRARY_VERSION_MAJOR 1)
+set(LIBRARY_VERSION_MINOR 0)
+set(LIBRARY_VERSION_PATCH 0)
+
+set(LIBRARY_VERSION ${LIBRARY_VERSION_MAJOR}.${LIBRARY_VERSION_MINOR}.${LIBRARY_VERSION_PATCH})
+
+set(SOURCES spi_lib.c)
+
+add_library(spi_lib SHARED ${SOURCES})
+
+set_target_properties(spi_lib PROPERTIES
+    VERSION ${LIBRARY_VERSION}
+    SOVERSION ${LIBRARY_VERSION_MAJOR})
+
+install(TARGETS spi_lib LIBRARY DESTINATION lib)
+install(FILES spi_lib.h DESTINATION include)

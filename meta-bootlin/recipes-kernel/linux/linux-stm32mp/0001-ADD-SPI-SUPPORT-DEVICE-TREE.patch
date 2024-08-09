@@ -1,0 +1,60 @@
+From f8fa49ce88cdc49f6cedad60927f671ed79e6c2f Mon Sep 17 00:00:00 2001
+From: IssamSayyaf <issamsayyaf97@gmail.com>
+Date: Sat, 27 Jul 2024 14:30:42 +0200
+Subject: [PATCH] ADD SPI SUPPORT DEVICE TREE
+
+---
+ arch/arm/boot/dts/stm32mp157f-dk2.dts | 39 +++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
+
+diff --git a/arch/arm/boot/dts/stm32mp157f-dk2.dts b/arch/arm/boot/dts/stm32mp157f-dk2.dts
+index d854ed0ac..b70631d63 100644
+--- a/arch/arm/boot/dts/stm32mp157f-dk2.dts
++++ b/arch/arm/boot/dts/stm32mp157f-dk2.dts
+@@ -149,3 +149,42 @@
+ 		vddio-supply = <&v3v3>;
+ 	};
+ };
++
++
++&pinctrl {
++	spi4_pins_mx: spi4_mx-0 {
++		pins {
++			pinmux = <STM32_PINMUX('E', 12, AF5)>, /* SPI4_SCK */
++					<STM32_PINMUX('E', 13, AF5)>, /* SPI4_MISO */
++					<STM32_PINMUX('E', 14, AF5)>; /* SPI4_MOSI */
++			bias-disable;
++			drive-push-pull;
++			slew-rate = <1>;
++		};
++	};
++
++	spi4_sleep_pins_mx: spi4_sleep_mx-0 {
++		pins {
++			pinmux = <STM32_PINMUX('E', 12, ANALOG)>, /* SPI4_SCK */
++					<STM32_PINMUX('E', 13, ANALOG)>, /* SPI4_MISO */
++					<STM32_PINMUX('E', 14, ANALOG)>; /* SPI4_MOSI */
++		};
++	};
++};
++
++&spi4{
++pinctrl-names = "default", "sleep";
++pinctrl-0 = <&spi4_pins_mx>;
++pinctrl-1 = <&spi4_sleep_pins_mx>;
++status = "okay";
++
++/* USER CODE BEGIN spi4 */
++cs-gpios = <&gpioe 11 GPIO_ACTIVE_LOW>; /* GPIOE pin 11 as CS (NSS), active low */
++spidev@0 {
++	compatible = "spidev";
++	reg = <0>;
++	spi-max-frequency = <500000>; /* Max SPI clock frequency */
++	status = "okay";
++};
++/* USER CODE END spi4 */
++};
+\ No newline at end of file
+-- 
+2.34.1
+
